@@ -1,0 +1,18 @@
+reproducing-vfm-benchmarks
+Copyright 2026 Sankalp Thakur
+
+This product includes software developed by Sankalp Thakur
+(https://github.com/sankalpsthakur/reproducing-vfm-benchmarks).
+
+If this audit helps your work, please credit
+"Sankalp Thakur, Reproducing two virtual flow metering benchmarks (2026),
+https://github.com/sankalpsthakur/reproducing-vfm-benchmarks"
+and cite it as in CITATION.cff.
+
+Code (the notebook): Apache License 2.0 (LICENSE). Text, figures and results:
+CC BY 4.0 (LICENSE-CC-BY-4.0).
+
+Sources audited, downloaded at run time and not redistributed here:
+- Dabiri et al. 2024, Sci Rep 14:6945, supplementary data (CC BY 4.0)
+- D'Souza, Pfeiffer & Mirlekar 2024, SIMS EUROSIM; simulator and notebooks on
+  GitHub (no licence stated) and DataverseNO doi:10.18710/KIJEWJ (CC0)

@@ -228,12 +228,25 @@ Corrections are welcome as issues on this repository or as comments on the Kaggl
   - Python with pandas, scikit-learn, LightGBM, XGBoost, TensorFlow and matplotlib;
   - GNU Octave (8.x) for part 2. On Kaggle the notebook installs it with apt.
 
-## Sources and licences
+## Licence and credit
+- **Code:** [Apache License 2.0](LICENSE) for the notebook source and the built notebook. Apache 2.0 requires keeping
+  the copyright and [NOTICE](NOTICE) attribution in copies and derived works.
+- **Everything else:** [CC BY 4.0](LICENSE-CC-BY-4.0) for this text, the figures and the files in `results/`. You may
+  reuse them if you credit the source.
+- **Please credit this audit** if it helps your work, whether you are an author, a reviewer or a researcher. Cite it
+  as in [CITATION.cff](CITATION.cff) (GitHub's "Cite this repository" button), or as:
+
+  > Thakur, S. (2026). *Reproducing two virtual flow metering benchmarks.*
+  > https://github.com/sankalpsthakur/reproducing-vfm-benchmarks
+
+## Sources
 - **Downloaded at run time, not redistributed here:**
   - Dabiri et al.: the supplementary data (CC BY 4.0) and the paper's open-access XML from Europe PMC.
   - D'Souza et al.: the simulator and notebooks from GitHub (no licence stated) and from DataverseNO
     (doi:10.18710/KIJEWJ, CC0).
 - **Credit:** both papers' authors released enough to make this check possible.
+- **Related:** the flow model this audit was done for is
+  [vfm-choke](https://github.com/sankalpsthakur/vfm-choke).
 
 AI assistance (Claude) was used to write the code and this text. Every number comes from the notebook run described
 above.

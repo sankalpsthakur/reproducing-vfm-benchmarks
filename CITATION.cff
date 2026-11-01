@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If this audit helps your work, please cite it as below."
+title: "Reproducing two virtual flow metering benchmarks"
+type: software
+authors:
+  - family-names: Thakur
+    given-names: Sankalp
+repository-code: "https://github.com/sankalpsthakur/reproducing-vfm-benchmarks"
+url: "https://www.kaggle.com/code/sankalpsthakur/reproducing-two-virtual-flow-metering-benchmarks"
+date-released: 2026-11-01
+license: Apache-2.0
+keywords:
+  - reproducibility
+  - virtual flow metering
+  - wellhead choke
+  - benchmark audit
+references:
+  - type: article
+    authors:
+      - family-names: Dabiri
+        given-names: M.-S.
+    title: "Modeling liquid rate through wellhead chokes using machine learning techniques"
+    journal: "Scientific Reports"
+    volume: 14
+    start: 6945
+    year: 2024
+    doi: "10.1038/s41598-024-54010-2"
+  - type: conference-paper
+    authors:
+      - family-names: D'Souza
+        given-names: N. A.
+      - family-names: Pfeiffer
+        given-names: C.
+      - family-names: Mirlekar
+        given-names: G.
+    title: "Assessment of data-driven techniques for flow rate predictions in sub-sea oil production"
+    collection-title: "Proceedings of SIMS EUROSIM 2024"
+    year: 2024
+    doi: "10.3384/ecp212.014"
