@@ -7,11 +7,21 @@
 #   Adaboost-SVR with the published settings averages 20.3% test AAPRE at best over 20 random 80/20 splits, against
 #   the reported 4.57%. Across 200 splits, the best model we tried (LightGBM) never goes below 7.1%. 124 of the 565
 #   rows sit in 44 groups of exact duplicates, so about 20% of a random test set has a copy in training.
-# - **D'Souza et al. 2024 (SIMS EUROSIM), two simulated gas-lifted wells.** The CSVs behind Table 1 are not released,
-#   and neither released copy of the simulator reproduces them. In both, the test window returns to the first step's
-#   exact state, where the paper's figures show a new level, so all ten of the paper's models score below 1% MAPE on
-#   regenerated data (Table 1 reports 1.5-16.7%). As released, the simulation script also asks a helper for 20
-#   outputs when it declares 17, which is an error in MATLAB and Octave.
+# - **D'Souza et al. 2024 (SIMS EUROSIM), two simulated gas-lifted wells.**
+#   - The CSVs behind Table 1 are not released.
+#   - Run as released, neither copy of the simulator reproduces them. In both, the test window returns to the first
+#     step's exact state, where the paper's figures show a new level. So all ten of the paper's models score below 1%
+#     MAPE on regenerated data, while Table 1 reports 1.5-16.7%.
+#   - As released, the simulation script also asks a helper for 20 outputs when it declares 17, which is an error in
+#     MATLAB and Octave.
+# - **Update, November 2026 (section 2.5).**
+#   - The D'Souza et al. authors have since shared both CSVs privately, with the configuration that made them: one run
+#     at each gas-lift share from 10% to 100% per well, at a one-minute step, averaged.
+#   - With that configuration, the released GitHub simulator reproduces the well-1 file exactly. The release has no
+#     configuration for well 2.
+#   - On the authors' files, 13 of Table 1's 20 values agree within our tolerance, and the LSTM ranks first on both
+#     wells.
+#   - Those checks ran privately, because the files are not ours to redistribute.
 # - Our own first pass got the D'Souza part wrong; section 2.4 says how. Questions for the authors are at the end.
 #
 # We wanted public benchmarks for a wellhead-choke flow model, so before treating these published numbers as bars we
@@ -505,10 +515,13 @@ print('\n' + json.dumps(RESULTS['dabiri_settings'], indent=1))
 # in sub-sea oil production. *Proceedings of SIMS EUROSIM 2024*.
 # [doi:10.3384/ecp212.014](https://doi.org/10.3384/ecp212.014)
 #
-# The paper simulates two gas-lifted wells with the open-loop model of Janatian et al. (2022), averages the output
-# to 5,762 one-minute samples per well, splits each series in time (training, validation, then the last 30% as
-# test) and compares ten regressors that predict three mass rates from gas-lift rate, bottomhole pressure and
-# wellhead pressure. Table 1 reports test MAPE; the best is an LSTM (1.96% for well 1, 1.53% for well 2).
+# The paper simulates two gas-lifted wells with the open-loop model of Janatian et al. (2022). It reports 5,762
+# samples per well. The authors have since told us that each well's series is the mean of ten runs at gas-lift
+# shares of 10% to 100% (section 2.5).
+#
+# The paper splits each series in time: training, validation, then the last 30% as test. It compares ten regressors
+# that predict three mass rates from gas-lift rate, bottomhole pressure and wellhead pressure. Table 1 reports test
+# MAPE, and the best model is an LSTM: 1.96% for well 1 and 1.53% for well 2.
 #
 # Two copies of the simulator are public: the GitHub repository linked from the paper and a DataverseNO deposit.
 
@@ -549,9 +562,11 @@ print(json.dumps(nb_facts, indent=1))
 
 # %% [markdown]
 # **Result.**
-# - **Data.** Neither deposit contains `Well1_average_data.csv` or `Well2_average_data.csv`. Both notebooks read the
-#   well-1 file, which had 5,762 rows according to their saved output, and no released code computes the MAPE values
-#   in Table 1.
+# - **Data.**
+#   - Neither deposit contains `Well1_average_data.csv` or `Well2_average_data.csv`. The authors have since shared
+#     both files privately (section 2.5).
+#   - Both notebooks read the well-1 file, which had 5,762 rows according to their saved output.
+#   - No released code computes the MAPE values in Table 1.
 # - **Settings.** Three details differ from the paper:
 #   - the notebook's MLP has one hidden layer of two neurons (`hidden_layer_sizes=(2)`), where the paper describes
 #     two hidden layers;
@@ -705,16 +720,19 @@ plt.savefig('dsouza_regenerated_series.png', dpi=120)
 plt.show()
 
 # %% [markdown]
-# **Result.** In both copies the test window returns exactly to the first step's state, with a 0.0% change in every
-# rate and pressure, and the series are smooth. The published figures differ (values read off the figures, so
-# approximate):
-# - **Level.** In the paper's Fig. 6 the largest well-1 curve sits near 78 kg/s in the first step and near 71 kg/s in
-#   the test window.
-# - **Oscillation.** The model predictions oscillate during the second step, so the inputs did too.
-# - **The GitHub copy.** Its oil-to-liquid ratio (0.762, from water cut 0.2) matches the figure's (about 60/78 =
-#   0.77), but its levels don't (liquid 92.5 kg/s).
+# **Result.** Each copy was run at a single gas-lift share. Both return exactly to the first step's state in the test
+# window, with a 0.0% change in every rate and pressure, and the series are smooth.
 #
-# Neither copy reproduces the published series.
+# The published figures differ. These values are read off the figures, so they are approximate:
+# - **Level.** In the paper's Fig. 6 the largest well-1 curve sits near 78 kg/s in the first step and near 71 kg/s in
+#   the test window. The authors' file, shared since, gives 78.08 and 71.14 kg/s.
+# - **Oscillation.** The model predictions oscillate during the second step, so the inputs did too. The authors' file
+#   confirms it: in step 2 the well-1 pressures reverse direction at 1,883 of 1,920 minutes.
+# - **The GitHub copy.** Its oil-to-liquid ratio (0.762, from water cut 0.2) matches the figure's (about 60/78 =
+#   0.77). At a single share its levels don't match (liquid 92.5 kg/s).
+#
+# At a single share, neither copy reproduces the published series. Averaged over the authors' ten gas-lift shares,
+# the GitHub copy reproduces the well-1 file exactly (section 2.5).
 
 # %% [markdown]
 # ### 2.3 The paper's models on each regenerated series
@@ -804,13 +822,42 @@ comp.round(3)
 # %% [markdown]
 # **Result.** On every regenerated series, every one of the paper's ten models scores below 1% MAPE (the largest is
 # 0.83%), against 1.5-16.7% in Table 1. When the test window repeats the training conditions, the task is
-# interpolation. The published numbers come from data we could not regenerate.
+# interpolation. The published numbers come from data we could not regenerate from the release alone. On the
+# authors' own files the same models score 0.8% to 13% (section 2.5).
 #
 # ### 2.4 A correction to our own first pass
 # Our first, private pass regenerated only the DataverseNO copy. We read its sub-1% scores as a sign that the
 # released simulator produces trivially clean data, and that the paper's CSVs must carry processing missing from the
 # release. That was wrong. The scores are low because the test window repeats the first step. The paper's figures
-# show a test window that doesn't, so its data came from a configuration that isn't in the release.
+# show a test window that doesn't, so its data came from a configuration that isn't in the release. The authors'
+# configuration, in section 2.5, confirms this.
+
+# %% [markdown]
+# ### 2.5 The authors' data (November 2026)
+# On Nov 2 2026 the authors answered question 4. They shared `Well1_average_data.csv` and `Well2_average_data.csv`
+# privately, with the configuration that made them. The gas-lift share was varied from 10% to 100% in each well, ten
+# runs at a one-minute step, and each file is the mean of its well's ten runs. The paper doesn't state this
+# configuration, and neither released copy contains it.
+#
+# The files are not ours to redistribute, so this notebook doesn't use them. These results come from a private run of
+# `checks/dsouza_shared_data/check.py` in the GitHub repository, against criteria written before the run:
+# - **Well 1 reproduces.** Run with that configuration, the GitHub single-well copy reproduces the well-1 file
+#   exactly: every value is within 7 × 10⁻¹⁰, first row included.
+#   - The DataverseNO two-well copy does not reproduce either file.
+#   - The release has no configuration for well 2.
+# - **Why the test window moves.**
+#   - At a 20% share, the well dies when the supply halves and doesn't restart.
+#   - That alone lowers the mean of the ten runs by 6.94 kg/s, the file's drop from 78.08 to 71.14 kg/s (-8.9%).
+#   - At a 10% share the well never flows after start-up. At 30-100% each run returns exactly to its step-1 state.
+# - **Table 1 on the authors' files, with the settings of section 2.3:**
+#   - 13 of the 20 published values agree within our tolerance, the larger of 0.5 points and 25%.
+#   - The LSTM ranks first on both wells, as published.
+#   - Three well-1 values fall below 1%: the LSTM and the two linear models.
+#   - Fitting the scaler on the training rows, as the paper's text says, gives 16 of 20. We report that number but
+#     did not judge on it.
+#   - No single protocol we tried reproduces the whole table.
+#
+# The repository's README, section 2.5, has the full table.
 
 # %% [markdown]
 # ## Summary
@@ -818,7 +865,7 @@ comp.round(3)
 # | | Reproduces | Does not reproduce |
 # |---|---|---|
 # | Dabiri et al. 2024 | The data (Table 3, exactly); Table 7's AAPRE, RMSE and APRE for 4 of the 5 classic correlations | Adaboost-SVR's 4.57% test AAPRE: 20.3% at best with the stated settings, and 7.1% on the best of 200 splits for the best model we tried; Pilehvari's 51.82% |
-# | D'Souza et al. 2024 | The simulator runs, once its outputs are taken from `oil_field_model` | The data behind Table 1: in both released copies the test window repeats the first step, so every model scores below 1% |
+# | D'Souza et al. 2024 | The simulator runs, once its outputs are taken from `oil_field_model`. With the configuration the authors shared in November 2026, the GitHub copy reproduces the well-1 data exactly. On the authors' files, 13 of Table 1's 20 values agree within our tolerance, and the LSTM ranks first on both wells | The data, from the release alone: run at one gas-lift share, both copies return to the first step in the test window. The well-2 data, whose configuration is not in the release. 7 of Table 1's 20 values, including well 1's two linear models (0.96% against 2.14% and 2.43%) |
 #
 # ## Questions for the authors
 # 1. **Dabiri et al.:** which split (seed or row indices) and which input and target scaling produced Table 6?
@@ -827,6 +874,11 @@ comp.round(3)
 # 3. **Dabiri et al.:** which Pilehvari constants give 51.82%? With A = 46.67, B = 0.313, C = 2.11 we get 122%.
 # 4. **D'Souza et al.:** could `Well1_average_data.csv` and `Well2_average_data.csv` be released, or the simulator
 #    settings that produced them?
+#    - **Answered in November 2026.** The authors shared both files and the configuration, and we thank them (section
+#      2.5).
+#    - **Still open:** the well-2 parameters, and whether the files may be released.
+# 5. **D'Souza et al.:** Table 1 gives 7.57 for both PLS and linear regression on well 2. On the shared file, linear
+#    regression scores 7.49 and PLS 12.99. Is the PLS value the one intended?
 #
 # Corrections are welcome in the comments. If a missing piece turns up, this notebook can be re-run against it.
 #
@@ -837,14 +889,17 @@ comp.round(3)
 #   - **Scaling.** The inputs and target scaling aren't stated, so we tried ten combinations plus tuned versions. A
 #     setting we didn't try could behave differently.
 # - **D'Souza et al.:**
-#   - **Levels.** The levels we compare against are read off the published figures, so they are approximate.
-#   - **Missing configuration.** The paper's data may come from settings the release doesn't show, such as a
-#     different gas-lift share or initial state. We ran each released copy with its own settings.
+#   - **Levels.** The levels in section 2.2 were read off the published figures, so they are approximate. The
+#     authors' files have since confirmed them: 78.08, 63.95 and 71.14 kg/s for well 1.
+#   - **Missing configuration.** We wrote that the paper's data might come from settings the release doesn't show,
+#     such as a different gas-lift share. That was the case: the data averages ten gas-lift shares (section 2.5).
 #   - **Models.** The paper's models follow its notebooks for well 1 and its text for well 2. Our LSTM is seeded;
-#     theirs was not.
+#     theirs was not. On the authors' files, no single protocol we tried reproduces all of Table 1.
 #
 # ## Reproduce
 # - **This notebook:** CPU, internet on, about 2.4 hours. Most of the time goes to the tuned SVR grids.
+# - **Section 2.5:** a private run of `checks/dsouza_shared_data/check.py`. It needs the authors' files, which are not
+#   redistributed.
 # - **Source, outputs and write-up:** [github.com/sankalpsthakur/reproducing-vfm-benchmarks](https://github.com/sankalpsthakur/reproducing-vfm-benchmarks).
 #
 # ## Licence and credit
@@ -861,4 +916,8 @@ comp.round(3)
 #   - the D'Souza et al. simulator and notebooks from GitHub (no licence stated) and from DataverseNO
 #     (doi:10.18710/KIJEWJ, CC0).
 # - **Saved as outputs:** only this notebook's own results. Third-party files are not redistributed.
-# - **Credit:** both papers' authors released enough to make this check possible.
+# - **Shared privately, not redistributed:** D'Souza et al.'s two CSVs and their run configuration, sent by the
+#   authors on Nov 2 2026.
+# - **Credit:**
+#   - Both papers' authors released enough to make this check possible.
+#   - The D'Souza et al. authors also shared the data behind Table 1 when we asked.
