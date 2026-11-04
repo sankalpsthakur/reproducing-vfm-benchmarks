@@ -26,7 +26,8 @@
 #
 # We wanted public benchmarks for a wellhead-choke flow model, so before treating these published numbers as bars we
 # tried to reproduce them. Both papers released data or code, which is what made the check possible. Every number
-# below is computed in this notebook from sources it downloads at run time.
+# below is computed in this notebook from sources it downloads at run time. Section 2.5 is the one exception: its
+# numbers come from a private run on files the D'Souza et al. authors shared, which are not redistributed.
 
 # %% [markdown]
 # ## Setup
@@ -726,8 +727,10 @@ plt.show()
 # The published figures differ. These values are read off the figures, so they are approximate:
 # - **Level.** In the paper's Fig. 6 the largest well-1 curve sits near 78 kg/s in the first step and near 71 kg/s in
 #   the test window. The authors' file, shared since, gives 78.08 and 71.14 kg/s.
-# - **Oscillation.** The model predictions oscillate during the second step, so the inputs did too. The authors' file
-#   confirms it: in step 2 the well-1 pressures reverse direction at 1,883 of 1,920 minutes.
+# - **Oscillation.** The model predictions oscillate during the second step, so the inputs did too.
+#   - The authors' file confirms this for well 1. From 40 to 62 h its bottomhole pressure reverses direction every
+#     minute, by a median of 0.6 bar.
+#   - Well 2's step-2 swing is under 0.1 bar.
 # - **The GitHub copy.** Its oil-to-liquid ratio (0.762, from water cut 0.2) matches the figure's (about 60/78 =
 #   0.77). At a single share its levels don't match (liquid 92.5 kg/s).
 #
@@ -823,7 +826,7 @@ comp.round(3)
 # **Result.** On every regenerated series, every one of the paper's ten models scores below 1% MAPE (the largest is
 # 0.83%), against 1.5-16.7% in Table 1. When the test window repeats the training conditions, the task is
 # interpolation. The published numbers come from data we could not regenerate from the release alone. On the
-# authors' own files the same models score 0.8% to 13% (section 2.5).
+# authors' own files, 17 of the 20 values are above 1%, up to 13% (section 2.5).
 #
 # ### 2.4 A correction to our own first pass
 # Our first, private pass regenerated only the DataverseNO copy. We read its sub-1% scores as a sign that the

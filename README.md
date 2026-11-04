@@ -186,8 +186,10 @@ What the comparison shows:
 - **The paper's figures.**
   - The test window sits at a new level.
   - The model predictions oscillate during the second step, so the inputs did too.
-  - The authors' files confirm both points. In step 2 the well-1 pressures reverse direction at 1,883 of 1,920
-    minutes.
+  - The authors' files confirm the level for both wells.
+  - They confirm the oscillation for well 1. From 40 to 62 h its bottomhole pressure reverses direction every minute,
+    by a median of 0.6 bar.
+  - Well 2's step-2 swing is under 0.1 bar.
 - **The GitHub copy.**
   - Its oil-to-liquid ratio (0.762, from water cut 0.2) matches the figure's (about 60/78).
   - At a single share its levels don't match. Averaged over the authors' ten shares they match exactly, and it is the
@@ -215,8 +217,8 @@ every model stays below 1% there too.
 | PCR | 9.52 | 0.14 | 0.25 | 16.69 | 0.29 |
 
 When the test window repeats the training conditions, the task is interpolation. The published numbers come from data
-we could not regenerate from the release alone. On the authors' own files the same models score 0.8% to 13%, in the
-paper's range ([section 2.5](#25-the-authors-data-november-2026)).
+we could not regenerate from the release alone. On the authors' own files, 17 of the 20 values are above 1%, up to
+13%, where the regenerated series above gave at most 0.83% ([section 2.5](#25-the-authors-data-november-2026)).
 
 ### 2.4 A correction to our own first pass
 Our first, private pass regenerated only the DataverseNO copy. We read its sub-1% scores as a sign that the released
@@ -306,8 +308,9 @@ What the table does and doesn't say:
   and 5.54, both within the tolerance.
 
 **What this changes.**
-- **The regime.** The data behind Table 1 is not the interpolation regime of our single-share runs. On it the models
-  score from 0.8% to 13%, in the paper's range.
+- **The regime.** The data behind Table 1 is not the interpolation regime of our single-share runs.
+  - On it, 17 of the 20 values are above 1%, up to 13%. Those runs gave at most 0.83%.
+  - Three well-1 values stay below 1%, so our pre-registered check that every value exceeds 1% is not met.
 - **Public reproducibility.**
   - Well 1's file can now be regenerated from the public GitHub release with the configuration above. So its numbers
     could move into the public notebook.
